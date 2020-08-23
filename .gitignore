@@ -1,0 +1,8 @@
+.DS_Store
+*.swp
+*.swo
+*.pyc
+*.mo
+/.vscode/
+node_modules/
+/db.sqlite3

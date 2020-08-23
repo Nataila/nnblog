@@ -1,0 +1,34 @@
+@import '~antd/dist/antd.css';
+
+#root, .App {
+  height: 100%;
+}
+
+.App {
+  width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#header {
+  padding: 15px 20px;
+}
+
+#main {
+  display: flex;
+  flex: 1;
+}
+
+#aside {
+  width: 200px;
+}
+
+#content {
+  flex: 1;
+}
+
+#main, #header, #content, #footer {
+  border: 1px solid;
+}
