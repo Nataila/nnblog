@@ -43,7 +43,7 @@ class Article(BaseModel):
 
 @app.post('/new/')
 def article_new(article:Article):
-    table.insert_one({'title': article.title, 'content': article.content})
+    table.insert_one(article.dict())
     return article
 
 @app.get('/article/list/')

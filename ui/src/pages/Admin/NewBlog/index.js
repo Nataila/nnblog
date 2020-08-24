@@ -19,7 +19,7 @@ const NewBlog = () => {
   function submit() {
     const content = editorInstance.getHTML()
     const postData = {...form, content}
-    axios.post('http://localhost:8000/new/', postData)
+    axios.post('http://mac.com:8000/new/', postData)
       .then(res=> {
         console.log(res);
       })
