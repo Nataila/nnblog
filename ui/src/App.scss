@@ -5,7 +5,6 @@
 }
 
 .App {
-  width: 1200px;
   margin: 0 auto;
   height: 100%;
   display: flex;
@@ -31,4 +30,15 @@
 
 #main, #header, #content, #footer {
   border: 1px solid;
+}
+
+.Home {
+  display: flex;
+  flex: 1 1;
+}
+
+.Home, .detail {
+  min-width: 1200px;
+  width: 80%;
+  margin: 20px auto;
 }

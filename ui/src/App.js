@@ -8,47 +8,38 @@ import {
 
 import { Layout } from 'antd';
 
-import NewBlog from './pages/NewBlog';
+import Home from './pages/Home';
+import Admin from './pages/Admin';
+import ArticleDetail from './pages/ArticleDetail';
 
-import logo from './logo.svg';
 import './App.scss';
-
-const { Header, Footer, Sider, Content } = Layout;
 
 function App() {
   return (
     <Router>
     <div className="App">
-      <header id="header">header</header>
-      <div id="main">
-        <aside id="aside">
+      <header id="header">
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/new">new</Link></li>
+            <li><Link to="/admin">admin</Link></li>
+            <li><Link to="/admin/new/">new</Link></li>
           </ul>
-        </aside>
-        <div id="content">
-
+      </header>
     <Switch>
-      <Route path="/new">
-        <NewBlog />
+      <Route path="/admin">
+        <Admin />
+      </Route>
+      <Route path="/detail/:id">
+        <ArticleDetail />
       </Route>
       <Route path="/">
         <Home />
       </Route>
     </Switch>
-    </div>
-      </div>
-      <div id="footer">footer</div>
+    <div id="footer">footer</div>
     </div>
     </Router>
   );
-}
-
-function Home() {
-  return (
-    <div className="home">Home1</div>
-  )
 }
 
 export default App;

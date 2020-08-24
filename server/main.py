@@ -7,13 +7,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
+from pymongo import MongoClient
+
+
+import json
+from bson import json_util, ObjectId
+
+MONGO_DB = {'host': '127.0.0.1', 'port': 27017}
+
+client = MongoClient(**MONGO_DB)
+db = client['nnblog']
+table = db['article']
 
 app = FastAPI()
 
-origins = [
-    'http://192.168.0.108:3000',
-    'http://mac.com:3000',
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,6 +41,29 @@ class Article(BaseModel):
     content: str
     # tag: list
 
-@app.post('/new')
+@app.post('/new/')
 def article_new(article:Article):
+    table.insert_one({'title': article.title, 'content': article.content})
     return article
+
+@app.get('/article/list/')
+def article_new():
+    a_list = []
+    data = table.find()
+    data = json.loads(json_util.dumps(data))
+    return {'articles': data}
+
+@app.delete('/article/del/{id}/')
+def article_del(id):
+    res = table.delete_one({'_id': ObjectId(id)})
+    print(res)
+    return {'ok': True}
+
+@app.get('/article/detail/{id}/')
+def article_new(id):
+    a_list = []
+    data = table.find_one({'_id': ObjectId(id)})
+    data = json.loads(json_util.dumps(data))
+    return {'article': data}
+
+
