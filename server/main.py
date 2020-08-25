@@ -4,17 +4,19 @@
 # @Date  :2020-08-21
 
 import json
+import datetime
+
 from bson import json_util, ObjectId
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
 from pydantic import BaseModel
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING
 from werkzeug.security import check_password_hash
 
-from utils import db, tools, redis
+from utils import db, tools, redis, depends
 
 app = FastAPI()
 
@@ -28,14 +30,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class User(BaseModel):
     username: str
     password: str
 
 
 @app.post("/login/")
-def article_list(user: User, response_class=ORJSONResponse):
+def login(user: User, response_class=ORJSONResponse):
     [username, passwd] = map(user.dict().get, ['username', 'password'])
     try:
         db_user = db.user.find_one({'username': username})
@@ -55,31 +56,32 @@ def article_list(user: User, response_class=ORJSONResponse):
 class Article(BaseModel):
     title: str
     content: str
+    created_at: datetime.datetime = datetime.datetime.now()
     # tag: list
 
 
 @app.post('/article/new/')
-def article_new(article: Article):
+def article_new(article: Article, user:dict=Depends(depends.token_is_true)):
     db.article.insert_one(article.dict())
     return article
 
 
 @app.get('/article/list/')
-def article_new():
+def article_list():
     a_list = []
-    data = db.article.find()
+    data = db.article.find().sort('created_at', -1)
     data = json.loads(json_util.dumps(data))
     return {'articles': data}
 
 
 @app.delete('/article/del/{id}/')
-def article_del(id):
+def article_del(id, user:dict=Depends(depends.token_is_true)):
     res = db.article.delete_one({'_id': ObjectId(id)})
     return {'ok': True}
 
 
 @app.get('/article/detail/{id}/')
-def article_new(id):
+def article_new(id, user:dict=Depends(depends.token_is_true)):
     a_list = []
     data = db.article.find_one({'_id': ObjectId(id)})
     data = json.loads(json_util.dumps(data))

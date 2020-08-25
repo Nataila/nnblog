@@ -13,6 +13,10 @@ axios.interceptors.request.use(config => {
   ) {
     config.url = BASE_URL + config.url;
   }
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  if (userInfo) {
+    config.headers.Token = `${userInfo.token}`;
+  }
   return config;
 });
 
@@ -56,7 +60,8 @@ export function httpDelete(api, data = {}) {
   data = {
     ...data
   };
-  return axios.delete(api, data).then(handleResponse)
+  return axios.delete(
+    api, data).then(handleResponse)
 }
 
 
