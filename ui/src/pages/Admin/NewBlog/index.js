@@ -10,19 +10,20 @@ import { Input, Button } from 'antd';
 import axios from 'axios';
 import Editor from 'react-editor-md';
 
+import { API } from '../../../consts.js';
+import { httpPost } from '../../../helper/request.js';
+
 const NewBlog = () => {
   const [editorInstance, setEditor] = useState()
   const [form, setForm] = useState({})
   function titleChange(e) {
     setForm({title: e.target.value})
   }
-  function submit() {
-    const content = editorInstance.getHTML()
-    const postData = {...form, content}
-    axios.post('http://mac.com:8000/new/', postData)
-      .then(res=> {
-        console.log(res);
-      })
+  async function submit() {
+    const content = editorInstance.getHTML();
+    const postData = {...form, content};
+    const res = await httpPost(API.ARTICLE.NEW, postData);
+    console.log(res);
   }
   return (
       <div>

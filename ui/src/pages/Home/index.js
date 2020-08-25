@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button } from 'antd';
@@ -7,6 +7,9 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/default.css';
 
 import { httpGet, httpDelete } from '../../helper/request.js';
+import { API } from '../../consts.js';
+
+import { UserContext } from '../../App.js';
 
 import './index.sass';
 
@@ -19,11 +22,13 @@ import './index.sass';
 // }
 
 
-export default function Home() {
+export default function Home(props) {
   const [articles, setArticle] = useState([]);
 
+  const user = useContext(UserContext);
+
   async function fetchData() {
-    const res = await httpGet('/article/list/');
+    const res = await httpGet(API.ARTICLE.LIST);
     setArticle(res.articles);
     document.querySelectorAll("pre code").forEach(block => {
       try{hljs.highlightBlock(block);}
@@ -35,7 +40,7 @@ export default function Home() {
   }, [])
 
   async function delArticle(id) {
-    const res = httpDelete(`/article/del/${id}/`);
+    const res = httpDelete(`${API.ARTICLE.DEL}${id}/`);
     fetchData();
   }
 
@@ -43,7 +48,9 @@ export default function Home() {
     <div key={item._id.$oid}>
       <Link to={`/detail/${item._id.$oid}` }>{item.title}</Link>
       <div dangerouslySetInnerHTML = {{ __html:item.content }}></div>
-      <Button type="primary" danger onClick={() => delArticle(item._id.$oid)}>删除</Button>
+      {Object.keys(user).length > 0 &&
+        <Button type="primary" danger onClick={() => delArticle(item._id.$oid)}>删除</Button>
+      }
     </div>
   )
 

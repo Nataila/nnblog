@@ -22,7 +22,7 @@ export default function ArticleDetail() {
   }, [])
 
   return (
-    <div class="detail">
+    <div className="detail">
     <div>{ article.title }</div>
     <div dangerouslySetInnerHTML = {{ __html:article.content }}></div>
     </div>

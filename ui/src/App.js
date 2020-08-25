@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,39 +13,73 @@ import Admin from './pages/Admin';
 import ArticleDetail from './pages/ArticleDetail';
 
 import './App.scss';
+import { httpPost } from './helper/request.js';
+import { API } from './consts.js';
 
-function App() {
+export const UserContext = createContext();
+
+export default function App() {
   const [visible, setVisible] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [user, setUser] = useState({})
+
+  const [form] = Form.useForm();
 
   const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 }
+    labelCol: { span: 4 },
+    wrapperCol: { span: 18 }
   };
 
-  const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 }
-  };
-
-  const onFinish = values => {
-    console.log('Success:', values);
+  async function onFinish(values) {
+    const res = await httpPost(API.LOGIN, values)
+    if (!!res.ok) {
+      localStorage.setItem('userInfo', JSON.stringify(res.data));
+      setVisible(false);
+      setConfirmLoading(false);
+      setUser(res.data);
+    }
   };
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
 
+  const isLoggedIn = Object.keys(user).length > 0;
+
+  function handleOk() {
+    setConfirmLoading(true);
+    form.submit();
+  };
+
   function handleCancel() {
     setVisible(false)
+  }
+
+  useEffect(() => {
+    let localUser = localStorage.getItem('userInfo');
+    if (localUser) {
+      setUser(JSON.parse(localUser));
+    }
+  }, [])
+
+  const logOut = () => {
+    localStorage.removeItem('userInfo');
+    setUser({});
   }
 
   return (
     <Router>
     <Modal
       title="登录"
+      cancelText="取消"
+      okText="登录"
       visible={visible}
+      onOk={handleOk}
+      confirmLoading={confirmLoading}
       onCancel={handleCancel}
     >
     <Form
+      form={form}
       {...layout}
       name="basic"
       initialValues={{ remember: true }}
@@ -53,7 +87,7 @@ function App() {
       onFinishFailed={onFinishFailed}
     >
       <Form.Item
-        label="Username"
+        label="用户名"
         name="username"
         rules={[{ required: true, message: 'Please input your username!' }]}
       >
@@ -61,7 +95,7 @@ function App() {
       </Form.Item>
 
       <Form.Item
-        label="Password"
+        label="密码"
         name="password"
         rules={[{ required: true, message: 'Please input your password!' }]}
       >
@@ -73,11 +107,15 @@ function App() {
       <header id="header">
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/admin">admin</Link></li>
-            <li><Link to="/admin/new/">new</Link></li>
+            {isLoggedIn && <li><Link to="/admin">admin</Link></li>}
+            {isLoggedIn && <li><Link to="/admin/new/">new</Link></li>}
           </ul>
-      <Button type="primary" onClick={() => {setVisible(true)}}>登录</Button>
+      {isLoggedIn
+        ? <Button type="primary" onClick={() => logOut()}>退出</Button>
+        : <Button type="primary" onClick={() => {setVisible(true)}}>登录</Button>
+      }
       </header>
+    <UserContext.Provider value={user}>
     <Switch>
       <Route path="/admin">
         <Admin />
@@ -89,10 +127,9 @@ function App() {
         <Home />
       </Route>
     </Switch>
+    </UserContext.Provider>
     <div id="footer">footer</div>
     </div>
     </Router>
   );
 }
-
-export default App;

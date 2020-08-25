@@ -5,11 +5,14 @@
 */
 
 
-export const BASE_URL = 'http://mac.com:8000'; // process.env.VUE_APP_WEB_API_URL;
+export const BASE_URL = process.env.REACT_APP_API_URI;
 
 export const API = {
+  LOGIN: '/login/',
   ARTICLE: {
-    LIST: 'article/list/',
-    NEW: 'article/new/'
+    LIST: '/article/list/',
+    NEW: '/article/new/',
+    DEL: '/article/del/',
+    DETAIL: '/article/detail/',
   }
 };
