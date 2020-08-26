@@ -12,7 +12,7 @@ import Home from './pages/Home';
 import Admin from './pages/Admin';
 import ArticleDetail from './pages/ArticleDetail';
 
-import './App.scss';
+import './App.sass';
 import { httpPost } from './helper/request.js';
 import { API } from './consts.js';
 
@@ -105,15 +105,17 @@ export default function App() {
     </Modal>
     <div className="App">
       <header id="header">
+        <div className='container'>
           <ul>
             <li><Link to="/">Home</Link></li>
             {isLoggedIn && <li><Link to="/admin">admin</Link></li>}
             {isLoggedIn && <li><Link to="/admin/new/">new</Link></li>}
           </ul>
-      {isLoggedIn
-        ? <Button type="primary" onClick={() => logOut()}>退出</Button>
-        : <Button type="primary" onClick={() => {setVisible(true)}}>登录</Button>
-      }
+          {isLoggedIn
+            ? <Button className="login-btn" type="primary" onClick={() => logOut()}>退出</Button>
+            : <Button className="login-btn" type="primary" onClick={() => {setVisible(true)}}>登录</Button>
+          }
+        </div>
       </header>
     <UserContext.Provider value={user}>
     <Switch>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
+import { DeleteOutlined, FieldTimeOutlined } from '@ant-design/icons';
 
 import hljs from 'highlight.js';
 import 'highlight.js/styles/default.css';
@@ -40,22 +41,35 @@ export default function Home(props) {
   }, [])
 
   async function delArticle(id) {
-    const res = httpDelete(`${API.ARTICLE.DEL}${id}/`);
+    const res = await httpDelete(`${API.ARTICLE.DEL}${id}/`);
     fetchData();
   }
 
   const items = articles.map(item =>
-    <div key={item._id.$oid}>
-      <Link to={`/detail/${item._id.$oid}` }>{item.title}</Link>
-      <div dangerouslySetInnerHTML = {{ __html:item.content }}></div>
-      {Object.keys(user).length > 0 &&
-        <Button type="primary" danger onClick={() => delArticle(item._id.$oid)}>删除</Button>
-      }
+    <div className="article-item" key={item._id.$oid}>
+      <Link className='article-title' to={`/detail/${item._id.$oid}` }>{item.title}</Link>
+      <div className='article-content' dangerouslySetInnerHTML = {{ __html:item.content }}></div>
+      <div className="op">
+        <div className="article-info">
+          <FieldTimeOutlined /> 2020-09-11
+        </div>
+        {Object.keys(user).length > 0 &&
+          <Popconfirm
+            placement="topRight"
+            title='确定删除此文章吗?'
+            onConfirm={() => delArticle(item._id.$oid)}
+            okText="确定"
+            cancelText="再想想"
+          >
+              <Button type="primary" shape="circle" size="small" icon={<DeleteOutlined />} danger></Button>
+          </Popconfirm>
+        }
+      </div>
     </div>
   )
 
   return (
-    <div className="Home">
+    <div className="Home container">
       <div id="main">
         <aside id="aside">
           <ul>
