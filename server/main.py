@@ -7,6 +7,7 @@ import json
 import datetime
 
 from bson import json_util, ObjectId
+from typing import List, Union
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,6 +30,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 class User(BaseModel):
     username: str
@@ -57,11 +59,11 @@ class Article(BaseModel):
     title: str
     content: str
     created_at: datetime.datetime = datetime.datetime.now()
-    # tag: list
+    tag: List[Union[str, int]] = []
 
 
 @app.post('/article/new/')
-def article_new(article: Article, user:dict=Depends(depends.token_is_true)):
+def article_new(article: Article, user: dict = Depends(depends.token_is_true)):
     db.article.insert_one(article.dict())
     return article
 
@@ -75,14 +77,20 @@ def article_list():
 
 
 @app.delete('/article/del/{id}/')
-def article_del(id, user:dict=Depends(depends.token_is_true)):
+def article_del(id, user: dict = Depends(depends.token_is_true)):
     res = db.article.delete_one({'_id': ObjectId(id)})
     return {'ok': True}
 
 
 @app.get('/article/detail/{id}/')
-def article_new(id, user:dict=Depends(depends.token_is_true)):
+def article_new(id, user: dict = Depends(depends.token_is_true)):
     a_list = []
     data = db.article.find_one({'_id': ObjectId(id)})
     data = json.loads(json_util.dumps(data))
     return {'article': data}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app='main:app', host="0.0.0.0", port=8011, reload=True, debug=True)

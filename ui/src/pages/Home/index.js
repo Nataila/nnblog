@@ -69,18 +69,16 @@ export default function Home(props) {
   )
 
   return (
-    <div className="Home container">
-      <div id="main">
-        <aside id="aside">
-          <ul>
-            <li>123123</li>
-            <li>123123</li>
-            <li>123123</li>
-            <li>123123</li>
-          </ul>
-        </aside>
-        <div id="content">{ items }</div>
-      </div>
+    <div className="home container">
+      <aside id="aside">
+        <ul>
+          <li>123123</li>
+          <li>123123</li>
+          <li>123123</li>
+          <li>123123</li>
+        </ul>
+      </aside>
+      <div id="content">{ items }</div>
     </div>
   );
 }

@@ -117,20 +117,22 @@ export default function App() {
           }
         </div>
       </header>
-    <UserContext.Provider value={user}>
-    <Switch>
-      <Route path="/admin">
-        <Admin />
-      </Route>
-      <Route path="/detail/:id">
-        <ArticleDetail />
-      </Route>
-      <Route path="/">
-        <Home />
-      </Route>
-    </Switch>
-    </UserContext.Provider>
-    <div id="footer">footer</div>
+      <div className="content-wrapper">
+        <UserContext.Provider value={user}>
+        <Switch>
+          <Route path="/admin">
+            <Admin />
+          </Route>
+          <Route path="/detail/:id">
+            <ArticleDetail />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+        </UserContext.Provider>
+      </div>
+      <div id="footer">footer</div>
     </div>
     </Router>
   );

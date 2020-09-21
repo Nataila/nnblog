@@ -13,31 +13,36 @@ import Editor from 'react-editor-md';
 import { API } from '../../../consts.js';
 import { httpPost } from '../../../helper/request.js';
 
+import './index.sass';
+
 const NewBlog = () => {
   const [editorInstance, setEditor] = useState()
   const [form, setForm] = useState({})
   function titleChange(e) {
-    setForm({title: e.target.value})
+    setForm({...form, title: e.target.value})
+  }
+  function tagsChange(e) {
+    setForm({...form, tags: e.target.value.split(',')})
   }
   async function submit() {
     const content = editorInstance.getHTML();
     const postData = {...form, content};
     const res = await httpPost(API.ARTICLE.NEW, postData);
-    console.log(res);
   }
   return (
-      <div>
-      <Input placeholder="Basic usage" onChange={titleChange} />
+      <div className="form-wrapper">
+      <Input className='title' placeholder="文章标题" onChange={ titleChange } />
       <Editor config={
         {
           width: '100%',
-            markdown: 'editor',
+            markdown: '',
             onload: (editor, func) => {
               setEditor(editor);
             },
         }
       }/>
-      <Button onClick={submit} type="primary" htmlType="submit">Submit</Button>
+      <Input className='tags' placeholder="标签" onChange={ tagsChange } />
+      <Button onClick={ submit } type="primary" htmlType="submit">确定</Button>
       </div>
   )
 };
