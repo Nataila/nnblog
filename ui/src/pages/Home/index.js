@@ -69,16 +69,21 @@ export default function Home(props) {
   )
 
   return (
-    <div className="home container">
-      <aside id="aside">
-        <ul>
-          <li>123123</li>
-          <li>123123</li>
-          <li>123123</li>
-          <li>123123</li>
-        </ul>
+    <div className="container">
+    <div className="d-top">码到成功</div>
+    <div className="home">
+      <aside className="aside">
+        <div className="d-item">
+          存数据订接口如探囊取物
+        </div>
       </aside>
       <div id="content">{ items }</div>
+      <aside className="aside">
+        <div className="d-item">
+          锁异步释内存似手到擒来
+        </div>
+      </aside>
+    </div>
     </div>
   );
 }

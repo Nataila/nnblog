@@ -4,6 +4,7 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/default.css';
 
 import { httpGet } from '../../helper/request.js';
+import './index.sass';
 
 export default function ArticleDetail() {
   const { id } = useParams();
@@ -22,9 +23,9 @@ export default function ArticleDetail() {
   }, [])
 
   return (
-    <div className="detail">
-    <div>{ article.title }</div>
-    <div dangerouslySetInnerHTML = {{ __html:article.content }}></div>
+    <div className="detail container">
+      <div>{ article.title }</div>
+      <div dangerouslySetInnerHTML = {{ __html:article.content }}></div>
     </div>
   )
 }

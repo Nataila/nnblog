@@ -11,6 +11,7 @@ from typing import List, Union
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import status
 from fastapi.responses import ORJSONResponse
 
 from pydantic import BaseModel
@@ -58,20 +59,20 @@ def login(user: User, response_class=ORJSONResponse):
 class Article(BaseModel):
     title: str
     content: str
+    tags: List[Union[str, int]] = []
     created_at: datetime.datetime = datetime.datetime.now()
-    tag: List[Union[str, int]] = []
 
 
 @app.post('/article/new/')
 def article_new(article: Article, user: dict = Depends(depends.token_is_true)):
-    db.article.insert_one(article.dict())
-    return article
+    res = db.article.insert_one(article.dict())
+    return ORJSONResponse(status_code=status.HTTP_200_OK, content={'ok': True, 'id': str(res.inserted_id)})
 
 
 @app.get('/article/list/')
 def article_list():
     a_list = []
-    data = db.article.find().sort('created_at', -1)
+    data = db.article.find().sort([('created_at', DESCENDING)])
     data = json.loads(json_util.dumps(data))
     return {'articles': data}
 
