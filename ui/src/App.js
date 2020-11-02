@@ -107,9 +107,9 @@ export default function App() {
       <header id="header">
         <div className='container'>
           <ul>
-            <li><Link to="/">Home</Link></li>
-            {isLoggedIn && <li><Link to="/admin">admin</Link></li>}
-            {isLoggedIn && <li><Link to="/admin/new/">new</Link></li>}
+            <li><Link to="/">首页</Link></li>
+            {isLoggedIn && <li><Link to="/admin"></Link></li>}
+            {isLoggedIn && <li><Link to="/admin/new/">新增</Link></li>}
           </ul>
           {isLoggedIn
             ? <Button className="login-btn" type="primary" onClick={() => logOut()}>退出</Button>
